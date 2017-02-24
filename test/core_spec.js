@@ -18,44 +18,32 @@ describe('app logic -', () => {
   describe('vote', () => {
     it('creates a tally for the voted entry', () => {
       const state = Map({
-        vote: Map({
-          pair: List.of('sparrow', 'starling')
-        }),
-        entries: List()
+        pair: List.of('sparrow', 'starling')
       })
       const nextState = vote(state, 'starling')
       expect(nextState).to.equal(Map({
-        vote: Map({
-          pair: List.of('sparrow', 'starling'),
-          tally: Map({
-            'starling': 1
-          })
-        }),
-        entries: List()
+        pair: List.of('sparrow', 'starling'),
+        tally: Map({
+          'starling': 1
+        })
       }))
     })
 
     it('adds to existing tally for the voted entry', () => {
       const state = Map({
-        vote: Map({
-          pair: List.of('sparrow', 'starling'),
-          tally: Map({
-            'sparrow': 3,
-            'starling': 1
-          })
-        }),
-        entries: List()
+        pair: List.of('sparrow', 'starling'),
+        tally: Map({
+          'sparrow': 3,
+          'starling': 1
+        })
       })
       const nextState = vote(state, 'sparrow')
       expect(nextState).to.equal(Map({
-        vote: Map({
-          pair: List.of('sparrow', 'starling'),
-          tally: Map({
-            'sparrow': 4,
-            'starling': 1,
-          })
-        }),
-        entries: List()
+        pair: List.of('sparrow', 'starling'),
+        tally: Map({
+          'sparrow': 4,
+          'starling': 1,
+        })
       }))
     })
   })
