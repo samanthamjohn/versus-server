@@ -140,7 +140,7 @@ describe('app logic -', () => {
       ).to.equal(
         Map({
           vote: Map({
-            round: 1,
+            round: 2,
             pair: List.of('sparrow', 'starling')
           }),
           entries: List.of('shrike'),
