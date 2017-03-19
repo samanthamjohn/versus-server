@@ -1,4 +1,10 @@
-import {setEntries, next, restart, vote, INITIAL_STATE} from './core'
+import {
+  INITIAL_STATE,
+  next,
+  restart,
+  setEntries,
+  vote,
+} from './core'
 
 export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {

@@ -7,7 +7,10 @@ import reducer from '../src/reducer'
 
 describe('reducer', () => {
   it('has an initial state', () => {
-    const action = {type: 'SET_ENTRIES', entries: ['sparrow']}
+    const action = {
+      type: 'SET_ENTRIES',
+      entries: ['sparrow']
+    }
     const nextState = reducer(undefined, action)
 
     expect(nextState).to.equal(fromJS({
