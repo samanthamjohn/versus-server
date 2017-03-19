@@ -47,6 +47,18 @@ describe('app logic -', () => {
         })
       }))
     })
+
+    it('ignores the vote for invalid entry', () => {
+      expect(
+        vote(Map({
+          pair: List.of('sparrow', 'starling')
+        }), 'shrike')
+      ).to.equal(
+        Map({
+          pair: List.of('sparrow', 'starling')
+        })
+      )
+    })
   })
 
   describe('next', () => {
