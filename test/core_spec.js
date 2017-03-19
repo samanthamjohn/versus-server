@@ -1,7 +1,7 @@
 import {List, Map} from 'immutable'
 import {expect} from 'chai'
 
-import {setEntries, next, vote} from '../src/core'
+import {setEntries, next, restart, vote} from '../src/core'
 
 describe('app logic -', () => {
   describe('setEntries', () => {
@@ -10,7 +10,8 @@ describe('app logic -', () => {
       const entries = List.of('sparrow', 'starling')
       const nextState = setEntries(state, entries)
       expect(nextState).to.equal(Map({
-        entries: List.of('sparrow', 'starling')
+        entries: List.of('sparrow', 'starling'),
+        initialEntries: List.of('sparrow', 'starling')
       }))
     })
   })
@@ -56,6 +57,7 @@ describe('app logic -', () => {
       const nextState = next(state)
       expect(nextState).to.equal(Map({
         vote: Map({
+          round: 1,
           pair: List.of('sparrow', 'starling')
         }),
         entries: List.of('crow')
@@ -65,6 +67,7 @@ describe('app logic -', () => {
     it('returns current vote winner back to entries', () => {
       const state = Map({
         vote: Map({
+          round: 1,
           pair: List.of('sparrow', 'starling'),
           tally: Map({
             'sparrow': 3,
@@ -76,6 +79,7 @@ describe('app logic -', () => {
       const nextState = next(state)
       expect(nextState).to.equal(Map({
         vote: Map({
+          round: 2,
           pair: List.of('raven', 'catbird'),
         }),
         entries: List.of('shrike', 'sparrow')
@@ -85,6 +89,7 @@ describe('app logic -', () => {
     it('returns tied vote back to entries', () => {
       const state = Map({
         vote: Map({
+          round: 1,
           pair: List.of('sparrow', 'starling'),
           tally: Map({
             'sparrow': 2,
@@ -96,6 +101,7 @@ describe('app logic -', () => {
       const nextState = next(state)
       expect(nextState).to.equal(Map({
         vote: Map({
+          round: 2,
           pair: List.of('raven', 'catbird')
         }),
         entries: List.of('shrike', 'sparrow', 'starling')
@@ -117,6 +123,30 @@ describe('app logic -', () => {
       expect(nextState).to.equal(Map({
         winner: 'starling'
       }))
+    })
+  })
+
+  describe('restart', () => {
+    it('returns initial entries and takes two under vote', () => {
+      expect(
+        restart(Map({
+          vote: Map({
+            round: 1,
+            pair: List.of('sparrow', 'shrike')
+          }),
+          entries: List(),
+          initialEntries: List.of('sparrow', 'starling', 'shrike')
+        }))
+      ).to.equal(
+        Map({
+          vote: Map({
+            round: 1,
+            pair: List.of('sparrow', 'starling')
+          }),
+          entries: List.of('shrike'),
+          initialEntries: List.of('sparrow', 'starling', 'shrike')
+        })
+      )
     })
   })
 })
