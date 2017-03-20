@@ -9,7 +9,11 @@ import {
 export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case 'SET_ENTRIES':
-      return setEntries(state, action.entries)
+      return setEntries(
+        state,
+        action.entries,
+        action.traits
+      )
 
     case 'NEXT':
       return next(state)
