@@ -1,4 +1,4 @@
-## VERSUS — client
+## VERSUS — server
 
 Using [yarn](https://yarnpkg.com/lang/en/docs/install/) to run the project:
 
