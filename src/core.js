@@ -10,7 +10,7 @@ import {List, Map, Set} from 'immutable'
 
 export const INITIAL_STATE = Map()
 
-export function setEntries(state, entries, traits) {
+export function setContent(state, entries, traits) {
   const entriesList = List(entries)
   const traitsList = List(traits)
 
@@ -18,7 +18,6 @@ export function setEntries(state, entries, traits) {
               .set('initialEntries', entriesList)
               .set('traits', traitsList)
               .set('initialTraits', traitsList)
-              .set('results', Set())
 }
 
 export function next(state, round = state.getIn(['vote', 'round'], 0)) {

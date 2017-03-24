@@ -1,4 +1,4 @@
-import {Map, fromJS} from 'immutable'
+import {Set, Map, fromJS} from 'immutable'
 import {expect} from 'chai'
 
 import reducer from '../src/reducer'
@@ -8,27 +8,30 @@ import reducer from '../src/reducer'
 describe('reducer', () => {
   it('has an initial state', () => {
     const action = {
-      type: 'SET_ENTRIES',
-      entries: ['sparrow']
+      type: 'SET_CONTENT',
+      entries: ['sparrow'],
+      traits: ['sad']
     }
     const nextState = reducer(undefined, action)
 
     expect(nextState).to.equal(fromJS({
       entries: ['sparrow'],
-      initialEntries: ['sparrow']
+      initialEntries: ['sparrow'],
+      traits: ['sad'],
+      initialTraits: ['sad'],
     }))
   })
 
   it('can be used with reduce', () => {
     const actions = [
-      {type: 'SET_ENTRIES', entries: ['sparrow', 'starling']},
+      {type: 'SET_CONTENT', entries: ['sparrow', 'starling']},
       {type: 'NEXT'},
       {type: 'VOTE', entry: 'sparrow'},
       {type: 'VOTE', entry: 'starling'},
       {type: 'VOTE', entry: 'starling'},
       {type: 'NEXT'}
     ]
-    const finalState = actions.reduce(reducer, Map())
+    const finalState = actions.reduce(reducer, Set, Map())
 
     expect(finalState).to.equal(fromJS({
       winner: 'starling',
@@ -36,9 +39,9 @@ describe('reducer', () => {
     }))
   })
 
-  it('handles SET_ENTRIES', () => {
+  it('handles SET_CONTENT', () => {
     const initialState = Map()
-    const action = {type: 'SET_ENTRIES', entries: ['sparrow']}
+    const action = {type: 'SET_CONTENT', entries: ['sparrow']}
     const nextState = reducer(initialState, action)
 
     expect(nextState).to.equal(fromJS({

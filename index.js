@@ -5,7 +5,7 @@ export const store = makeStore()
 startServer(store)
 
 store.dispatch({
-  type: 'SET_ENTRIES',
+  type: 'SET_CONTENT',
   entries: require('./entries.json'),
   traits: require('./traits.json')
 })

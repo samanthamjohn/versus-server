@@ -2,14 +2,14 @@ import {
   INITIAL_STATE,
   next,
   restart,
-  setEntries,
+  setContent,
   vote,
 } from './core'
 
 export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case 'SET_ENTRIES':
-      return setEntries(
+    case 'SET_CONTENT':
+      return setContent(
         state,
         action.entries,
         action.traits

@@ -4,19 +4,24 @@ import {expect} from 'chai'
 import {
   next,
   restart,
-  setEntries,
+  setContent,
   vote,
 } from '../src/core'
 
-describe('app logic -', () => {
-  describe('setEntries', () => {
-    it('adds the entries to the state', () => {
+describe('core logic -', () => {
+  describe('setContent', () => {
+    it('adds entries and traits to the state', () => {
       const state = Map()
       const entries = List.of('sparrow', 'starling')
-      const nextState = setEntries(state, entries)
+      const traits = List.of('nice', 'sad')
+
+      const nextState = setContent(state, entries, traits)
+
       expect(nextState).to.equal(Map({
         entries: List.of('sparrow', 'starling'),
-        initialEntries: List.of('sparrow', 'starling')
+        initialEntries: List.of('sparrow', 'starling'),
+        traits: List.of('nice', 'sad'),
+        initialTraits: List.of('nice', 'sad')
       }))
     })
   })
@@ -24,13 +29,15 @@ describe('app logic -', () => {
   describe('vote', () => {
     it('creates a tally for the voted entry', () => {
       const state = Map({
-        pair: List.of('sparrow', 'starling')
+        pair: List.of('sparrow', 'starling'),
+        trait: 'sad'
       })
       const nextState = vote(state, 'starling')
       expect(nextState).to.equal(Map({
         pair: List.of('sparrow', 'starling'),
+        trait: 'sad',
         tally: Map({
-          'starling': 1
+          'starling': Map({'sad': 1})
         })
       }))
     })
@@ -38,17 +45,17 @@ describe('app logic -', () => {
     it('adds to existing tally for the voted entry', () => {
       const state = Map({
         pair: List.of('sparrow', 'starling'),
+        trait: 'sad',
         tally: Map({
-          'sparrow': 3,
-          'starling': 1
+          'sparrow': Map({'sad': 3}),
         })
       })
       const nextState = vote(state, 'sparrow')
       expect(nextState).to.equal(Map({
         pair: List.of('sparrow', 'starling'),
+        trait: 'sad',
         tally: Map({
-          'sparrow': 4,
-          'starling': 1,
+          'sparrow': Map({'sad': 4}),
         })
       }))
     })
@@ -69,15 +76,19 @@ describe('app logic -', () => {
   describe('next', () => {
     it('takes the next two entries for voting', () => {
       const state = Map({
-        entries: List.of('sparrow', 'starling', 'crow')
+        entries: List.of('sparrow', 'starling', 'crow'),
+        traits: List.of('sad', 'nice')
       })
       const nextState = next(state)
       expect(nextState).to.equal(Map({
+        entries: List.of('crow'),
+        traits: List.of('nice'),
         vote: Map({
           round: 1,
-          pair: List.of('sparrow', 'starling')
+          pair: List.of('sparrow', 'starling'),
+          trait: 'nice'
         }),
-        entries: List.of('crow')
+        results: undefined
       }))
     })
 
@@ -86,6 +97,7 @@ describe('app logic -', () => {
         vote: Map({
           round: 1,
           pair: List.of('sparrow', 'starling'),
+          trait: 'sad',
           tally: Map({
             'sparrow': 3,
             'starling': 1
