@@ -1,4 +1,4 @@
-import {Set, Map, fromJS} from 'immutable'
+import {Map, Set, fromJS} from 'immutable'
 import {expect} from 'chai'
 
 import reducer from '../src/reducer'
@@ -24,52 +24,67 @@ describe('reducer', () => {
 
   it('can be used with reduce', () => {
     const actions = [
-      {type: 'SET_CONTENT', entries: ['sparrow', 'starling']},
+      {
+        type: 'SET_CONTENT',
+        entries: ['sparrow', 'starling'],
+        traits: ['sad', 'nice']
+      },
       {type: 'NEXT'},
       {type: 'VOTE', entry: 'sparrow'},
       {type: 'VOTE', entry: 'starling'},
       {type: 'VOTE', entry: 'starling'},
       {type: 'NEXT'}
     ]
+
     const finalState = actions.reduce(reducer, Set, Map())
 
     expect(finalState).to.equal(fromJS({
-      winner: 'starling',
-      initialEntries: ['sparrow', 'starling']
+      initialEntries: ['sparrow', 'starling'],
     }))
   })
 
   it('handles SET_CONTENT', () => {
     const initialState = Map()
-    const action = {type: 'SET_CONTENT', entries: ['sparrow']}
+    const action = {
+      type: 'SET_CONTENT',
+      entries: ['sparrow'],
+      traits: ['sad']
+    }
     const nextState = reducer(initialState, action)
 
     expect(nextState).to.equal(fromJS({
       entries: ['sparrow'],
-      initialEntries: ['sparrow']
+      initialEntries: ['sparrow'],
+      traits: ['sad'],
+      initialTraits: ['sad'],
     }))
   })
 
   it('handles NEXT', () => {
     const initialState = fromJS({
-      entries: ['sparrow', 'starling']
+      entries: ['sparrow', 'starling'],
+      traits: ['sad', 'nice']
     })
     const action = {type: 'NEXT'}
     const nextState = reducer(initialState, action)
 
     expect(nextState).to.equal(fromJS({
+      entries: [],
+      traits: ['nice'],
       vote: {
         round: 1,
-        pair: ['sparrow', 'starling']
+        pair: ['sparrow', 'starling'],
+        trait: 'sad'
       },
-      entries: []
+      results: Set([undefined])
     }))
   })
 
   it('handles VOTE', () => {
     const initialState = fromJS({
       vote: {
-        pair: ['sparrow', 'starling']
+        pair: ['sparrow', 'starling'],
+        trait: 'sad'
       },
       entries: []
     })
@@ -79,7 +94,8 @@ describe('reducer', () => {
     expect(nextState).to.equal(fromJS({
       vote: {
         pair: ['sparrow', 'starling'],
-        tally: {sparrow: 1}
+        trait: 'sad',
+        tally: {sparrow: {sad: 1}}
       },
       entries: []
     }))

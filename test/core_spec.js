@@ -1,4 +1,4 @@
-import {List, Map} from 'immutable'
+import {List, Map, Set} from 'immutable'
 import {expect} from 'chai'
 
 import {
@@ -74,7 +74,7 @@ describe('core logic -', () => {
   })
 
   describe('next', () => {
-    it('takes the next two entries for voting', () => {
+    it('takes next two entries for voting', () => {
       const state = Map({
         entries: List.of('sparrow', 'starling', 'crow'),
         traits: List.of('sad', 'nice')
@@ -86,9 +86,9 @@ describe('core logic -', () => {
         vote: Map({
           round: 1,
           pair: List.of('sparrow', 'starling'),
-          trait: 'nice'
+          trait: 'sad'
         }),
-        results: undefined
+        results: Set([undefined])
       }))
     })
 
@@ -99,19 +99,21 @@ describe('core logic -', () => {
           pair: List.of('sparrow', 'starling'),
           trait: 'sad',
           tally: Map({
-            'sparrow': 3,
-            'starling': 1
+            'sparrow': Map({'sad': 4}),
           })
         }),
-        entries: List.of('raven', 'catbird', 'shrike')
+        entries: List.of('raven', 'catbird', 'shrike'),
+        traits: List.of('nice', 'angry')
       })
       const nextState = next(state)
       expect(nextState).to.equal(Map({
         vote: Map({
           round: 2,
           pair: List.of('raven', 'catbird'),
+          trait: 'nice',
         }),
-        entries: List.of('shrike', 'sparrow')
+        entries: List.of('shrike', 'sparrow'),
+        traits: List.of('angry')
       }))
     })
 
@@ -161,19 +163,26 @@ describe('core logic -', () => {
         restart(Map({
           vote: Map({
             round: 1,
-            pair: List.of('sparrow', 'shrike')
+            pair: List.of('sparrow', 'shrike'),
+            trait: 'sad'
           }),
           entries: List(),
-          initialEntries: List.of('sparrow', 'starling', 'shrike')
+          initialEntries: List.of('sparrow', 'starling', 'shrike'),
+          traits: List(),
+          initialTraits: List.of('nice', 'sad'),
         }))
       ).to.equal(
         Map({
           vote: Map({
             round: 2,
-            pair: List.of('sparrow', 'starling')
+            pair: List.of('sparrow', 'starling'),
+            trait: 'nice'
           }),
           entries: List.of('shrike'),
-          initialEntries: List.of('sparrow', 'starling', 'shrike')
+          initialEntries: List.of('sparrow', 'starling', 'shrike'),
+          traits: List.of('sad'),
+          initialTraits: List.of('nice', 'sad'),
+          results: Set([undefined])
         })
       )
     })
