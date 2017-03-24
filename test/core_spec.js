@@ -1,4 +1,4 @@
-import {List, Map, Set} from 'immutable'
+import {List, Map, Set, fromJS} from 'immutable'
 import {expect} from 'chai'
 
 import {
@@ -74,7 +74,7 @@ describe('core logic -', () => {
   })
 
   describe('next', () => {
-    it('takes next two entries for voting', () => {
+    xit('takes next two entries for voting', () => {
       const state = Map({
         entries: List.of('sparrow', 'starling', 'crow'),
         traits: List.of('sad', 'nice')
@@ -92,7 +92,7 @@ describe('core logic -', () => {
       }))
     })
 
-    it('returns current vote winner back to entries', () => {
+    xit('returns current vote winner back to entries', () => {
       const state = Map({
         vote: Map({
           round: 1,
@@ -117,7 +117,7 @@ describe('core logic -', () => {
       }))
     })
 
-    it('returns tied vote back to entries', () => {
+    xit('returns tied vote back to entries', () => {
       const state = Map({
         vote: Map({
           round: 1,
@@ -139,26 +139,100 @@ describe('core logic -', () => {
       }))
     })
 
-    it('declares the last entry left as winner', () => {
+    it('adds the vote tally to Results', () => {
       const state = Map({
         vote: Map({
+          round: 1,
           pair: List.of('sparrow', 'starling'),
+          trait: 'sad',
           tally: Map({
-            'sparrow': 2,
-            'starling': 3
+            'sparrow': {'sad': 2},
           })
         }),
-        entries: List()
+        entries: List.of('raven', 'catbird', 'shrike'),
+        traits: List.of('nice', 'angry'),
       })
       const nextState = next(state)
-      expect(nextState).to.equal(Map({
-        winner: 'starling'
-      }))
+
+      expect(nextState.getIn(['results', 'sparrow'])).to.eql({'sad' : 2})
     })
+
+    it('preserves existing tally in Results', () => {
+      const state = Map({
+        vote: Map({
+          round: 2,
+          pair: List.of('raven', 'catbird'),
+          trait: 'nice',
+          tally: Map({
+            'raven': {'nice': 1},
+          })
+        }),
+        entries: List.of('shrike'),
+        traits: List.of('angry'),
+        results: Map({
+          'sparrow': {'sad': 2},
+        })
+      })
+      const nextState = next(state)
+
+      expect(nextState.getIn(['results', 'sparrow'])).to.eql({'sad' : 2})
+      expect(nextState.getIn(['results', 'raven'])).to.eql({'nice' : 1})
+    })
+
+    it('updates an existing tally in the results', () => {
+      const state = fromJS({
+        vote: {
+          round: 2,
+          pair: ['raven', 'catbird'],
+          trait: 'nice',
+          tally: {
+            'raven': {'nice': 1},
+          }
+        },
+        entries: ['shrike'],
+        traits: ['angry'],
+        results: {
+          'raven': {'sad': 2, 'nice': 3},
+        }
+      })
+      const nextState = next(state)
+
+      expect(nextState.getIn(['results', 'raven'])).to.eql(fromJS({'nice' : 4, 'sad' : 2}))
+    })
+
+    // .to.equal(Map({
+    //   vote: Map({
+    //    round: 2,
+    //    pair: List.of('raven', 'catbird'),
+    //    trait: 'nice',
+    //  }),
+    // entries: List.of('shrike'),
+    // traits: List.of('angry'),
+    // results: {
+    //   'sparrow': {'sad': 2}
+    // }
+    // }))
+
+
+    //   it('declares the last entry left as winner', () => {
+    //     const state = Map({
+    //       vote: Map({
+    //         pair: List.of('sparrow', 'starling'),
+    //         tally: Map({
+    //           'sparrow': 2,
+    //           'starling': 3
+    //         })
+    //       }),
+    //       entries: List()
+    //     })
+    //     const nextState = next(state)
+    //     expect(nextState).to.equal(Map({
+    //       winner: 'starling'
+    //     }))
   })
 
   describe('restart', () => {
-    it('returns initial entries and takes two under vote', () => {
+    xit('returns initial entries and takes two under vote', () => {
       expect(
         restart(Map({
           vote: Map({

@@ -19,8 +19,11 @@ export function next(state, round = state.getIn(['vote', 'round'], 0)) {
   const entries = state.get('entries').concat(winners)
 
   // FOR RESULTS
-  const results = state.get('results')
+  const results = state.get('results') || Map({})
   const tally = state.getIn(['vote', 'tally'])
+  const newResults = results.mergeDeepWith((prev, next, key) => {
+    return prev + next
+  }, tally)
 
   // NEXT: With every vote, I want to append a new tally into results.
   // Can I use the union method from Set()?
@@ -33,9 +36,13 @@ export function next(state, round = state.getIn(['vote', 'round'], 0)) {
     }),
     entries: entries.skip(2),
     traits: traits.skip(1),
-    results: Set(results).union([tally]),
+    results: newResults
   })
 }
+// results: {
+//  sparrow: {sad: 1},
+//  starling: {honest: 1},
+// }
 
 export function vote(voteState, entry) {
   if (voteState.get('pair').includes(entry)) {

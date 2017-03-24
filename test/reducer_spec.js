@@ -22,7 +22,7 @@ describe('reducer', () => {
     }))
   })
 
-  it('can be used with reduce', () => {
+  xit('can be used with reduce', () => {
     const actions = [
       {
         type: 'SET_CONTENT',
@@ -60,7 +60,7 @@ describe('reducer', () => {
     }))
   })
 
-  it('handles NEXT', () => {
+  xit('handles NEXT', () => {
     const initialState = fromJS({
       entries: ['sparrow', 'starling'],
       traits: ['sad', 'nice']
